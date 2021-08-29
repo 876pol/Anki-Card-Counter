@@ -1,7 +1,8 @@
 import json
-import os
+import sys
 
 import anki.cards
+import anki.stats
 from aqt import mw, gui_hooks
 from aqt.qt import *
 
@@ -25,6 +26,7 @@ class CardCounter:
 
         # adds hook that fires when a card is studied
         gui_hooks.reviewer_did_show_answer.append(self.update)
+        gui_hooks.collection_did_load.append(self.update_all)
 
     # displays card count
     def display(self) -> None:
@@ -87,7 +89,25 @@ class CardCounter:
 
     # increments card count
     def update(self, card: anki.cards.Card) -> None:
+        if "cards" not in self.count:
+            self.count["cards"] = {}
+        if str(card.id) not in self.count["cards"]:
+            self.count["cards"][str(card.id)] = 0
         self.count["card_count"] += 1
+        self.count["cards"][str(card.id)] += 1
+        f = open(self.file, "w")
+        json.dump(self.count, f)
+
+    # updates all card counts
+    def update_all(self, collection) -> None:
+        if "cards" not in self.count:
+            self.count["cards"] = {}
+        for card_id in mw.col.find_cards(""):
+            card = mw.col.getCard(card_id)
+            if str(card_id) not in self.count["cards"]:
+                self.count["cards"][str(card_id)] = 0
+            self.count["card_count"] += max(card.reps - self.count["cards"][str(card_id)], 0)
+            self.count["cards"][str(card_id)] = card.reps
         f = open(self.file, "w")
         json.dump(self.count, f)
 
@@ -102,7 +122,7 @@ class CardCounter:
         if not os.path.exists(os.path.dirname(self.file)):
             os.makedirs(os.path.dirname(self.file))
         f = open(self.file, "w")
-        self.count = {"card_count": 0}
+        self.count["card_count"] = 0
         json.dump(self.count, f)
 
 
