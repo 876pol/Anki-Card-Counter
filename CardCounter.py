@@ -27,6 +27,7 @@ class CardCounter:
 
         # adds hook that fires when a card is studied
         gui_hooks.reviewer_did_show_answer.append(self.update)
+        # adds hook that fires when window loads
         gui_hooks.collection_did_load.append(self.update_all)
 
     # displays card count
@@ -101,6 +102,20 @@ class CardCounter:
 
     # updates all card counts
     def update_all(self, collection) -> None:
+        # checks if the card count is empty, if so, rebuilds it
+        if self.count == {}:
+            self.count["cards"] = {}
+            self.count["card_count"] = 0
+            for card_id in mw.col.find_cards(""):
+                card = mw.col.getCard(card_id)
+                if str(card_id) not in self.count["cards"]:
+                    self.count["cards"][str(card_id)] = 0
+                self.count["cards"][str(card_id)] = card.reps
+            f = open(self.file, "w")
+            json.dump(self.count, f)
+            return
+
+        # syncs local card counts with the cloud
         if "cards" not in self.count:
             self.count["cards"] = {}
         for card_id in mw.col.find_cards(""):
@@ -123,5 +138,4 @@ class CardCounter:
         if not os.path.exists(os.path.dirname(self.file)):
             os.makedirs(os.path.dirname(self.file))
         f = open(self.file, "w")
-        self.count["card_count"] = 0
         json.dump(self.count, f)
