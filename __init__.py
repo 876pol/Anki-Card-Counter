@@ -4,4 +4,4 @@ from . import CardCounter
 # Creates a new menu item under "Tools" that displays the number of cards that you have studied
 
 
-counter = CardCounter()
+counter = CardCounter.CardCounter()

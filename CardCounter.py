@@ -22,6 +22,7 @@ class CardCounter:
             self.file = os.path.join(os.path.dirname(__file__), "user_files", "card_count.json")
             self.count = json.load(open(self.file))
         except (json.JSONDecodeError, FileNotFoundError):
+            self.count = {}
             self.reset()
 
         # adds hook that fires when a card is studied
