@@ -1,3 +1,5 @@
+# Anki Card Counter
+
 This project is an Anki addon that creates a new menu item under "Tools" that displays the number of cards that you have
 studied. Written with Python 3.
 
