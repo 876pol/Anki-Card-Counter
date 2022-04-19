@@ -122,7 +122,6 @@ class CardCounter:
             card = mw.col.getCard(card_id)
             if str(card_id) not in self.count["cards"]:
                 self.count["cards"][str(card_id)] = 0
-                self.count["card_count"] += 1
             self.count["card_count"] += max(card.reps - self.count["cards"][str(card_id)], 0)
             self.count["cards"][str(card_id)] = card.reps
         f = open(self.file, "w")
