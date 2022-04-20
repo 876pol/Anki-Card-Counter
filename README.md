@@ -1,6 +1,6 @@
 # Anki Card Counter
 
-An Anki add-on that creates a new menu item under "Tools" that displays the number of cards that have been studied. Written with Python 3.
+An Anki add-on that displays the number of cards that have been studied. Written with Python 3.
 
 The `.ankiaddon` file can be downloaded in 'Releases'.
 
